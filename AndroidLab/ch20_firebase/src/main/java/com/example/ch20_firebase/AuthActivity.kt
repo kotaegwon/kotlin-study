@@ -15,35 +15,36 @@ class AuthActivity : AppCompatActivity() {
     lateinit var binding: ActivityAuthBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding= ActivityAuthBinding.inflate(layoutInflater)
+        binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
 
-        if(MyApplication.checkAuth()){
+        if (MyApplication.checkAuth()) {
             changeVisibility("login")
-        }else {
+        } else {
             changeVisibility("logout")
         }
 
         val requestLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult())
+            ActivityResultContracts.StartActivityForResult()
+        )
         {
             //구글 로그인 결과 처리...........................
             val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
-            try{
+            try {
                 val account = task.getResult(ApiException::class.java)
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
                 MyApplication.auth.signInWithCredential(credential)
-                    .addOnCompleteListener(this){task ->
-                        if(task.isSuccessful){
+                    .addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
                             MyApplication.email = account.email
                             changeVisibility("login")
-                        }else {
+                        } else {
                             changeVisibility("logout")
                         }
                     }
-            }catch (e: ApiException){
+            } catch (e: ApiException) {
                 changeVisibility("logout")
             }
         }
@@ -55,7 +56,7 @@ class AuthActivity : AppCompatActivity() {
             changeVisibility("logout")
         }
 
-        binding.goSignInBtn.setOnClickListener{
+        binding.goSignInBtn.setOnClickListener {
             changeVisibility("signin")
         }
 
@@ -74,22 +75,28 @@ class AuthActivity : AppCompatActivity() {
             //이메일,비밀번호 회원가입........................
             val email = binding.authEmailEditView.text.toString()
             val password = binding.authPasswordEditView.text.toString()
+            // createUserWithEmailAndPassword - 파이어베이스에 이메일/비밀번호 등록
             MyApplication.auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this){ task ->
+                .addOnCompleteListener(this) { task ->
                     binding.authEmailEditView.text.clear()
                     binding.authPasswordEditView.text.clear()
-                    if(task.isSuccessful){
+                    if (task.isSuccessful) {
                         MyApplication.auth.currentUser?.sendEmailVerification()
                             ?.addOnCompleteListener { sendTask ->
-                                if(sendTask.isSuccessful){
-                                    Toast.makeText(baseContext, "회원가입에 성공하였습니다. 전송된 메일을 확인해 주세요", Toast.LENGTH_SHORT).show()
+                                if (sendTask.isSuccessful) {
+                                    Toast.makeText(
+                                        baseContext,
+                                        "회원가입에 성공하였습니다. 전송된 메일을 확인해 주세요",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                     changeVisibility("logout")
-                                }else {
-                                    Toast.makeText(baseContext, "메일 전송 실패", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(baseContext, "메일 전송 실패", Toast.LENGTH_SHORT)
+                                        .show()
                                     changeVisibility("logout")
                                 }
                             }
-                    }else {
+                    } else {
                         Toast.makeText(baseContext, "회원 가입 실패", Toast.LENGTH_SHORT).show()
                         changeVisibility("logout")
                     }
@@ -102,18 +109,22 @@ class AuthActivity : AppCompatActivity() {
             val email = binding.authEmailEditView.text.toString()
             val password = binding.authPasswordEditView.text.toString()
             MyApplication.auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this){task ->
+                .addOnCompleteListener(this) { task ->
                     binding.authEmailEditView.text.clear()
                     binding.authPasswordEditView.text.clear()
-                    if(task.isSuccessful){
-                        if(MyApplication.checkAuth()){
+                    if (task.isSuccessful) {
+                        if (MyApplication.checkAuth()) {
                             MyApplication.email = email
                             changeVisibility("login")
-                        }else {
-                            Toast.makeText(baseContext, "전송된 메일로 이메일 인증이 되지 않았습니다.", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(
+                                baseContext,
+                                "전송된 메일로 이메일 인증이 되지 않았습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
 
                         }
-                    }else {
+                    } else {
                         Toast.makeText(baseContext, "로그인 실패", Toast.LENGTH_SHORT).show()
 
                     }
@@ -121,20 +132,20 @@ class AuthActivity : AppCompatActivity() {
         }
     }
 
-    fun changeVisibility(mode: String){
-        if(mode === "login"){
+    fun changeVisibility(mode: String) {
+        if (mode === "login") {
             binding.run {
                 authMainTextView.text = "${MyApplication.email} 님 반갑습니다."
-                logoutBtn.visibility= View.VISIBLE
-                goSignInBtn.visibility= View.GONE
-                googleLoginBtn.visibility= View.GONE
-                authEmailEditView.visibility= View.GONE
-                authPasswordEditView.visibility= View.GONE
-                signBtn.visibility= View.GONE
-                loginBtn.visibility= View.GONE
+                logoutBtn.visibility = View.VISIBLE
+                goSignInBtn.visibility = View.GONE
+                googleLoginBtn.visibility = View.GONE
+                authEmailEditView.visibility = View.GONE
+                authPasswordEditView.visibility = View.GONE
+                signBtn.visibility = View.GONE
+                loginBtn.visibility = View.GONE
             }
 
-        }else if(mode === "logout"){
+        } else if (mode === "logout") {
             binding.run {
                 authMainTextView.text = "로그인 하거나 회원가입 해주세요."
                 logoutBtn.visibility = View.GONE
@@ -145,7 +156,7 @@ class AuthActivity : AppCompatActivity() {
                 signBtn.visibility = View.GONE
                 loginBtn.visibility = View.VISIBLE
             }
-        }else if(mode === "signin"){
+        } else if (mode === "signin") {
             binding.run {
                 logoutBtn.visibility = View.GONE
                 goSignInBtn.visibility = View.GONE

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Ch20_Firebase</string>
+    <string name="default_web_client_id">rhxornjs@naver.com</string>
 </resources>
