@@ -11,22 +11,25 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     lateinit var volleyFragment: VolleyFragment
     lateinit var retrofitFragment: RetrofitFragment
-    var mode = "volley"
+//    var mode = "volley"
+    var mode = "retrofit2"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding= ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
 
-        volleyFragment= VolleyFragment()
-        retrofitFragment= RetrofitFragment()
+        volleyFragment = VolleyFragment()
+        retrofitFragment = RetrofitFragment()
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.activity_content, volleyFragment)
             .commit()
-        supportActionBar?.title="Volley Test"
+//        supportActionBar?.title = "Volley Test"
+        supportActionBar?.title="Retrofit2 Test"
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -35,18 +38,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId === R.id.menu_volley && mode !== "volley"){
+        if (item.itemId === R.id.menu_volley && mode !== "volley") {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.activity_content, volleyFragment)
                 .commit()
-            mode="volley"
-            supportActionBar?.title="Volley Test"
-        }else if(item.itemId === R.id.menu_retrofit && mode !== "retrofit"){
+            mode = "volley"
+            supportActionBar?.title = "Volley Test"
+        } else if (item.itemId === R.id.menu_retrofit && mode !== "retrofit") {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.activity_content, retrofitFragment)
                 .commit()
-            mode="retrofit"
-            supportActionBar?.title="Retrofit Test"
+            mode = "retrofit"
+            supportActionBar?.title = "Retrofit Test"
         }
         return super.onOptionsItemSelected(item)
     }
